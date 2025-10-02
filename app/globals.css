@@ -1,26 +1,18 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+
+:root{
+  --yobu-bg-start:#4C1D95;
+  --yobu-bg-mid:#6D28D9;
+  --yobu-bg-end:#A78BFA;
+}
+html, body {
+  @apply text-white bg-gradient-to-br from-[var(--yobu-bg-start)] via-[var(--yobu-bg-mid)] to-[var(--yobu-bg-end)] min-h-screen;
+  font-variant-numeric: tabular-nums;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+.card{ @apply bg-white/10 border border-white/10 rounded-2xl shadow-2xl backdrop-blur; }
+.button-primary{ @apply px-5 py-3 rounded-xl font-semibold shadow-lg transition bg-gradient-to-r from-[#6D28D9] to-[#A78BFA] hover:opacity-90; }
+.link-ghost{ @apply px-5 py-3 rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 transition; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
