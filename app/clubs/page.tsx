@@ -1,4 +1,6 @@
-// app/clubs/page.tsx
+"use client";
+
+import Link from "next/link";
 import { clubs } from "@/data/clubs";
 
 export default function ClubsPage() {
@@ -11,9 +13,9 @@ export default function ClubsPage() {
       ) : (
         <div className="grid gap-5 sm:grid-cols-2">
           {clubs.map((c) => (
-            <a
+            <Link
               key={c.id}
-              href={`/clubs/${c.id}`} // ← 次のステップで詳細ページを作ります
+              href={`/clubs/${c.id}`}
               className="card p-5 block hover:bg-white/20 transition"
             >
               <div className="flex items-center justify-between">
@@ -23,7 +25,7 @@ export default function ClubsPage() {
                 </span>
               </div>
               <p className="text-white/70 text-sm mt-2">タップして見積もりへ</p>
-            </a>
+            </Link>
           ))}
         </div>
       )}

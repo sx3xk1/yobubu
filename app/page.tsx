@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+
 export default function Home() {
   return (
     <section className="max-w-5xl mx-auto mt-16 px-6">
@@ -7,11 +11,13 @@ export default function Home() {
             キャバクラの “だいたい”、ここで一発。
           </h1>
           <p className="text-white/80 mb-6">
-            人数・時間・指名・ボトル…合計いくら？  
+            人数・時間・指名・ボトル…合計いくら？
             Yobubuは公式情報をもとに、総額と１人あたりを即シミュレーションします。
           </p>
           <div className="flex gap-4 justify-center">
-            <a href="/clubs" className="button-primary">店舗を選ぶ</a>
+            {/* 内部遷移は Link */}
+            <Link href="/clubs" className="button-primary">店舗を選ぶ</Link>
+            {/* 同一ページ内スクロールは <a> のままでOK */}
             <a href="#how" className="link-ghost">使い方</a>
           </div>
         </div>

@@ -2,22 +2,27 @@
 
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { clubs, Club } from "@/data/clubs";
+import { clubs, type Club } from "@/data/clubs";
 
 type Cart = Record<string, number>;
+const ceil100 = (n: number) => Math.ceil(n / 100) * 100;
 
-function ceil100(n: number) {
-  return Math.ceil(n / 100) * 100;
-}
-
-export default function ClubSimulator() {
+// 親：存在チェックだけ（ここでは Hooks を使わない）
+export default function Page() {
   const { id } = useParams<{ id: string }>();
   const club = (clubs as Club[]).find((c) => c.id === id);
-  if (!club) return <main className="max-w-3xl mx-auto p-6">店舗が見つかりません。</main>;
 
+  if (!club) {
+    return <main className="max-w-3xl mx-auto p-6">店舗が見つかりません。</main>;
+  }
+  return <ClubSimulator club={club} />;
+}
+
+// 子：ここで Hooks を“常に”同じ順序で呼ぶ
+function ClubSimulator({ club }: { club: Club }) {
   // 入力状態
   const [people, setPeople] = useState(3);
-  const [hours, setHours] = useState(2); // 1, 1.5, 2, 3...
+  const [hours, setHours] = useState(2);
   const [vip, setVip] = useState(false);
   const [nominate, setNominate] = useState(0);
   const [companion, setCompanion] = useState(0);
@@ -60,11 +65,10 @@ export default function ClubSimulator() {
 
     const ch = sumCart(champagneCart, club.menus.champagne);
     const mx = sumCart(mixerCart, club.menus.mixers);
-    const girlsItem = club.menus.girlsDrink[0]; // 先頭を採用（1種類想定）
+    const girlsItem = club.menus.girlsDrink[0];
     const girlsAmt = girlsItem ? girlsItem.price * Math.max(0, girlsDrinkQty) : 0;
 
-    // サービス料・消費税を別建てで算出（合計は従来ロジックと完全一致）
-    const subtotal = base + nominateAmt + companionAmt + ch.total + mx.total + girlsAmt; // サ抜・税抜
+    const subtotal = base + nominateAmt + companionAmt + ch.total + mx.total + girlsAmt;
     const afterSvc = subtotal * (1 + p.serviceCharge);
     const serviceFee = afterSvc - subtotal;
     const afterTax = afterSvc * (1 + p.tax);
@@ -95,7 +99,7 @@ export default function ClubSimulator() {
 
   return (
     <main className="max-w-6xl mx-auto p-6 grid gap-6 lg:grid-cols-5">
-      {/* 入力 */}
+      {/* --- ここから下はあなたの元の JSX をそのまま --- */}
       <section className="lg:col-span-3 card p-6">
         <h1 className="text-2xl md:text-3xl font-extrabold">{club.name}</h1>
         <p className="text-white/70 text-sm">{club.area}</p>
@@ -261,7 +265,7 @@ export default function ClubSimulator() {
                     value={mixerCart[item.id] ?? 0}
                     onChange={(e) => setMixerCart((c) => ({ ...c, [item.id]: Math.max(0, Number(e.target.value)) }))}
                   />
-                  <button className="px-2 py-1 rounded bg-white/10" onClick={() => setMixerCart((c) => bump(c, item.id, +1))}>
+                  <button className="px-2 py-1 rounded bg白/10" onClick={() => setMixerCart((c) => bump(c, item.id, +1))}>
                     ＋
                   </button>
                 </div>
@@ -276,59 +280,47 @@ export default function ClubSimulator() {
           <div className="flex items-center justify-between px-3 py-2 rounded-xl border border-white/15 bg-white/5">
             <div className="text-sm">
               <div>{club.menus.girlsDrink[0].name}</div>
-              <div className="text-xs text-white/60">¥{club.menus.girlsDrink[0].price.toLocaleString()} / 杯</div>
+              <div className="text-xs text白/60">¥{club.menus.girlsDrink[0].price.toLocaleString()} / 杯</div>
             </div>
             <div className="flex items-center gap-2">
-              <button className="px-2 py-1 rounded bg-white/10" onClick={() => setGirlsDrinkQty((q) => Math.max(0, q - 1))}>
-                −
-              </button>
+              <button className="px-2 py-1 rounded bg白/10" onClick={() => setGirlsDrinkQty((q) => Math.max(0, q - 1))}>−</button>
               <input
-                className="w-14 text-center rounded bg-white/10 border border-white/20 px-2 py-1"
+                className="w-14 text-center rounded bg白/10 border border白/20 px-2 py-1"
                 type="number"
                 min={0}
                 value={girlsDrinkQty}
                 onChange={(e) => setGirlsDrinkQty(Math.max(0, Number(e.target.value)))}
               />
-              <button className="px-2 py-1 rounded bg-white/10" onClick={() => setGirlsDrinkQty((q) => q + 1)}>
-                ＋
-              </button>
+              <button className="px-2 py-1 rounded bg白/10" onClick={() => setGirlsDrinkQty((q) => q + 1)}>＋</button>
             </div>
           </div>
-          <p className="text-xs text-white/60 mt-1">例：指名1人＋ヘルプ2人に各1杯 → 数量3</p>
+          <p className="text-xs text白/60 mt-1">例：指名1人＋ヘルプ2人に各1杯 → 数量3</p>
         </div>
 
-        <p className="mt-4 text-white/60 text-xs">※概算：サービス料→消費税の順に加算／100円単位で切り上げ。</p>
+        <p className="mt-4 text白/60 text-xs">※概算：サービス料→消費税の順に加算／100円単位で切り上げ。</p>
       </section>
 
       {/* 結果 */}
       <aside className="lg:col-span-2 card p-6 h-fit sticky top-6">
         <h2 className="text-lg font-semibold">見積もり結果</h2>
 
-        <div className="mt-3 space-y-1 text-sm text-white/85">
+        <div className="mt-3 space-y-1 text-sm text白/85">
           <div>基本料金：¥{result.base.toLocaleString()}</div>
           {result.nominateAmt > 0 && <div>指名料：¥{result.nominateAmt.toLocaleString()}</div>}
           {result.companionAmt > 0 && <div>同伴：¥{result.companionAmt.toLocaleString()}</div>}
           <div>ドリンク小計：¥{result.drinkTotal.toLocaleString()}</div>
           {result.lines.map((l, i) => (
-            <div key={i} className="text-white/70">
-              ・{l.label} … ¥{l.amount.toLocaleString()}
-            </div>
+            <div key={i} className="text白/70">・{l.label} … ¥{l.amount.toLocaleString()}</div>
           ))}
 
-          {/* 追加：サービス料・消費税・小計 */}
-          <div className="mt-2 text-white/75">小計（サ・税抜）：¥{Math.round(result.subtotal).toLocaleString()}</div>
-          <div className="text-white/75">
-            サービス料（{Math.round((club.pricing.serviceCharge ?? 0) * 100)}%）：¥
-            {Math.round(result.serviceFee).toLocaleString()}
-          </div>
-          <div className="text-white/75">
-            消費税（{Math.round((club.pricing.tax ?? 0) * 100)}%）：¥{Math.round(result.taxFee).toLocaleString()}
-          </div>
+          <div className="mt-2 text白/75">小計（サ・税抜）：¥{Math.round(result.subtotal).toLocaleString()}</div>
+          <div className="text白/75">サービス料（{Math.round((club.pricing.serviceCharge ?? 0) * 100)}%）：¥{Math.round(result.serviceFee).toLocaleString()}</div>
+          <div className="text白/75">消費税（{Math.round((club.pricing.tax ?? 0) * 100)}%）：¥{Math.round(result.taxFee).toLocaleString()}</div>
         </div>
 
-        <div className="mt-4 p-4 rounded-xl border border-white/20 bg-black/20">
+        <div className="mt-4 p-4 rounded-xl border border白/20 bg-black/20">
           <div className="text-2xl font-extrabold">合計：¥{result.total.toLocaleString()}</div>
-          <div className="text-white/80 mt-1">お一人あたり：¥{result.perPerson.toLocaleString()}</div>
+          <div className="text白/80 mt-1">お一人あたり：¥{result.perPerson.toLocaleString()}</div>
         </div>
       </aside>
     </main>
