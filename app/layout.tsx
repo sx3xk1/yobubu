@@ -1,4 +1,5 @@
 import "./globals.css";
+import Link from "next/link"; // ← 追加
 
 export const metadata = { title: "Yobubu | 北新地 料金シミュレーター" };
 
@@ -11,7 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span className="inline-block w-8 h-8 rounded-xl bg-white/20 backdrop-blur" />
             <span className="font-extrabold tracking-wide text-xl">Yobubu</span>
           </div>
-          <a href="/clubs" className="link-ghost">店舗一覧</a>
+          {/* ✅ Link を使う */}
+          <Link href="/clubs" className="link-ghost">
+            店舗一覧
+          </Link>
         </nav>
         <main className="px-4">{children}</main>
         <footer className="mt-16 py-8 text-center text-white/70 text-xs">
@@ -21,3 +25,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+
